@@ -51,6 +51,30 @@ Now, for the final task, your goal is to bring all these individual pieces toget
 
 <hr>
 
+**Also, please provide a short video demo (5-10 minutes) covering a sample User Journey, such as:**
+
+1.  Authentication (Security):
+    - Open the PetStore Web App in Incognito/Private mode.
+    - Click "Login" and authenticate via Microsoft Entra External ID (show the Microsoft sign-in screen).
+
+2.  Order Placement (Core Flow & Messaging):
+    - Select a category, add a product to the cart, and update the cart.
+    - Navigate to Azure Portal -> Blob Storage and verify that a Reservation JSON file has been created. Open the file to demonstrate the correct Session ID and order details.
+
+3.  Databases:
+    - Show in Azure Portal (or via a database tool) that product/pet data is being retrieved from Azure SQL.
+    - Show in Cosmos DB (Data Explorer) that a new Order record has been created.
+
+4.  Infrastructure & Scaling:
+    - Demonstrate the configuration of Deployment Slots (if using App Service) or Revisions (if using Container Apps).
+    - Show the Auto-scaling settings for the Public API services.
+
+5.  Error Handling (Logic Apps):
+    - *Optional but recommended:* Simulate a failure (e.g., by temporarily breaking the Blob Storage connection string), show the message arriving in the Dead-Letter Queue (DLQ), and verify the Logic App sent an email.
+    - *Alternative:* Show the Logic App workflow visualization in the portal and the history of successful runs.
+
+<hr>
+
 **Check your peer's task**
 
 1. Please review the Teams channel (Files tab) for information about the participant whose task you are assigned to assess.
@@ -66,7 +90,7 @@ Now, for the final task, your goal is to bring all these individual pieces toget
 <div style="border: 1px solid #ccc; background-color: #eee;">
   <ul>
     <li>When presenting the results of the practical tasks, please <a href="../common/presenting-results/presenting-results.md">follow these guidelines</a>.</li>
-    <li><strong>When you have completed the task, attach the file(s) to the "Answer" field. Files should include a PDF/DOCX file with screenshots (optionally, you can also add a GIF/MP4 file). Please add a link to the updated Pet Store solution in a public Git repository to your PDF/DOCX file. Click "Submit."</strong></li>
+    <li><strong>When you have completed the task, attach the file(s) to the "Answer" field. Files should include a PDF/DOCX file with screenshots and your video demo (MP4). Please add a link to the updated Pet Store solution in a public Git repository to your PDF/DOCX file. Click "Submit."</strong></li>
     <li>Delete unnecessary resources.</li>
   </ul>
 </div>
