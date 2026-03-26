@@ -84,9 +84,15 @@ public class FeignConfig {
             String responseTraceId = extractHeaderValue(response, "X-Response-Trace-ID");
             String currentTraceId = MDC.get("traceId");
 
-            log.error("Feign client error on {} [RequestID: {}, SessionID: {}, TraceID: {}, ResponseTraceID: {}]: {} - {}",
-                    methodKey, requestId, sessionId, currentTraceId, responseTraceId,
-                    response.status(), response.reason());
+            if (response.status() == 404) {
+                log.info("Feign client resource not found on {} [RequestID: {}, SessionID: {}, TraceID: {}, ResponseTraceID: {}]: {} - {}",
+                        methodKey, requestId, sessionId, currentTraceId, responseTraceId,
+                        response.status(), response.reason());
+            } else {
+                log.error("Feign client error on {} [RequestID: {}, SessionID: {}, TraceID: {}, ResponseTraceID: {}]: {} - {}",
+                        methodKey, requestId, sessionId, currentTraceId, responseTraceId,
+                        response.status(), response.reason());
+            }
 
             String errorMessage = String.format(
                     "Service call failed for %s [RequestID: %s, SessionID: %s, TraceID: %s] with status %d",
