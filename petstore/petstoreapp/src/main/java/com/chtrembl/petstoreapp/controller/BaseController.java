@@ -202,7 +202,7 @@ public abstract class BaseController {
     private void appendStackTrace(StringBuilder sb, Throwable throwable, String prefix) {
         if (throwable == null) return;
 
-        sb.append(prefix).append(throwable.toString()).append("\n");
+        sb.append(prefix).append(throwable).append("\n");
         for (StackTraceElement element : throwable.getStackTrace()) {
             sb.append("\tat ").append(element).append("\n");
         }

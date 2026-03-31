@@ -1,6 +1,17 @@
 spring:
   application:
     name: petstoreproductservice
+  datasource:
+    url: jdbc:postgresql://${PETSTOREPRODUCTSERVICE_DB_HOST:aagarwal-dev-postgres-db.postgres.database.azure.com}:${PETSTOREPRODUCTSERVICE_DB_PORT:5432}/${PETSTOREPRODUCTSERVICE_DB_NAME:petstoreproductservice_db}?sslmode=require
+    username: ${PETSTOREPRODUCTSERVICE_DB_USERNAME:user123}
+    password: ${PETSTOREPRODUCTSERVICE_DB_PWD:U$3r@1234}
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: ${PETSTOREPRODUCTSERVICE_SERVER_PORT:8080}
 
