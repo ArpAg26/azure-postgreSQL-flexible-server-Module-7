@@ -1,8 +1,11 @@
 package com.chtrembl.petstore.order.service;
 
+import com.azure.cosmos.models.PartitionKey;
 import com.chtrembl.petstore.order.exception.OrderNotFoundException;
+import com.chtrembl.petstore.order.mapper.OrderMapper;
 import com.chtrembl.petstore.order.model.Order;
 import com.chtrembl.petstore.order.model.Product;
+import com.chtrembl.petstore.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -24,7 +27,10 @@ public class OrderService {
     private final CacheManager cacheManager;
     private final ProductService productService;
 
-    @Cacheable(ORDERS)
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
+
+//    @Cacheable(ORDERS)
     public Order createOrder(String orderId) {
         log.info("Creating new order with id: {} and caching it", orderId);
         return Order.builder()
@@ -50,18 +56,26 @@ public class OrderService {
             throw new IllegalArgumentException("Order ID cannot be null or empty");
         }
 
-        // Try to get from cache
-        Cache cache = cacheManager.getCache(ORDERS);
-        if (cache != null) {
-            Cache.ValueWrapper wrapper = cache.get(orderId);
-            if (wrapper != null) {
-                Order cachedOrder = (Order) wrapper.get();
-                if (cachedOrder != null) {
-                    log.info("Found existing order: {}", orderId);
-                    return cachedOrder;
-                }
-            }
+        //Getting order from Order Repository
+        PartitionKey pk = new PartitionKey(orderId);
+        Optional<com.chtrembl.petstore.order.entity.Order> orderById = orderRepository.findById(orderId, pk);
+        if(orderById.isPresent()){
+            log.info("Found existing order: {}", orderId);
+            return orderMapper.toOrderModel(orderById.get());
         }
+
+        // Try to get from cache
+//        Cache cache = cacheManager.getCache(ORDERS);
+//        if (cache != null) {
+//            Cache.ValueWrapper wrapper = cache.get(orderId);
+//            if (wrapper != null) {
+//                Order cachedOrder = (Order) wrapper.get();
+//                if (cachedOrder != null) {
+//                    log.info("Found existing order: {}", orderId);
+//                    return cachedOrder;
+//                }
+//            }
+//        }
 
         // Order not found - throw exception instead of creating new one
         log.warn("Order not found: {}", orderId);
@@ -75,25 +89,35 @@ public class OrderService {
     public Order getOrCreateOrder(String orderId) {
         log.info("Getting or creating order: {}", orderId);
 
-        // Try to get from cache first
-        Cache cache = cacheManager.getCache(ORDERS);
-        if (cache != null) {
-            Cache.ValueWrapper wrapper = cache.get(orderId);
-            if (wrapper != null) {
-                Order cachedOrder = (Order) wrapper.get();
-                if (cachedOrder != null) {
-                    log.info("Found existing order for update: {}", orderId);
-                    return cachedOrder;
-                }
-            }
+        //Getting order from Order Repository
+        PartitionKey pk = new PartitionKey(orderId);
+        Optional<com.chtrembl.petstore.order.entity.Order> orderById = orderRepository.findById(orderId, pk);
+        if(orderById.isPresent()){
+            log.info("Found existing order for update: {}", orderId);
+            return orderMapper.toOrderModel(orderById.get());
         }
+
+
+        // Try to get from cache first
+//        Cache cache = cacheManager.getCache(ORDERS);
+//        if (cache != null) {
+//            Cache.ValueWrapper wrapper = cache.get(orderId);
+//            if (wrapper != null) {
+//                Order cachedOrder = (Order) wrapper.get();
+//                if (cachedOrder != null) {
+//                    log.info("Found existing order for update: {}", orderId);
+//                    return cachedOrder;
+//                }
+//            }
+//        }
 
         // Create new order if not found
         log.info("Creating new order for update: {}", orderId);
         Order newOrder = createOrder(orderId);
-        if (cache != null) {
-            cache.put(orderId, newOrder);
-        }
+        orderRepository.save(orderMapper.toOrderEntity(newOrder));
+//        if (cache != null) {
+//            cache.put(orderId, newOrder);
+//        }
 
         return newOrder;
     }
@@ -130,10 +154,11 @@ public class OrderService {
         }
 
         // Explicitly update cache
-        Cache cache = cacheManager.getCache(ORDERS);
-        if (cache != null) {
-            cache.put(order.getId(), cachedOrder);
-        }
+        orderRepository.save(orderMapper.toOrderEntity(cachedOrder));
+//        Cache cache = cacheManager.getCache(ORDERS);
+//        if (cache != null) {
+//            cache.put(order.getId(), cachedOrder);
+//        }
 
         return cachedOrder;
     }
@@ -273,6 +298,7 @@ public class OrderService {
                 Product availableProduct = foundProduct.get();
                 orderProduct.setName(availableProduct.getName());
                 orderProduct.setPhotoURL(availableProduct.getPhotoURL());
+                orderRepository.save(orderMapper.toOrderEntity(order));
 
                 log.info("Enriched product {}: '{}' -> '{}', URL: '{}' -> '{}'",
                         orderProduct.getId(), originalName, availableProduct.getName(),
