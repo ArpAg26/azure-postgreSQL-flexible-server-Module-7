@@ -2,9 +2,9 @@ spring:
   application:
     name: petstoreproductservice
   datasource:
-    url: jdbc:postgresql://${PETSTOREPRODUCTSERVICE_DB_HOST:locahost}:${PETSTOREPRODUCTSERVICE_DB_PORT:5432}/${PETSTOREPRODUCTSERVICE_DB_NAME:DB_NAME}?sslmode=require
+    url: jdbc:postgresql://${PETSTOREPRODUCTSERVICE_DB_HOST:aagarwal-postgresql-db.postgres.database.azure.com}:${PETSTOREPRODUCTSERVICE_DB_PORT:5432}/${PETSTOREPRODUCTSERVICE_DB_NAME:petstoreproductservice_db}?sslmode=require
     username: ${PETSTOREPRODUCTSERVICE_DB_USERNAME:<USERNAME>}
-    password: ${PETSTOREPRODUCTSERVICE_DB_PWD:<USER_PASSWORD>}
+    password: ${PETSTOREPRODUCTSERVICE_DB_PWD:<PWD>}
   jpa:
     hibernate:
       ddl-auto: update

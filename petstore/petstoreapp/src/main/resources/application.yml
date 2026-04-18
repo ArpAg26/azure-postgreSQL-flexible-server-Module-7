@@ -6,6 +6,10 @@ petstore:
       url: ${PETSTOREPRODUCTSERVICE_URL:http://localhost:8082}
     order:
       url: ${PETSTOREORDERSERVICE_URL:http://localhost:8083}
+    orders:
+      items:
+        reserver:
+          url: ${ORDERITEMSRESERVERSERVICE_URL:http://localhost:62489}
   security:
     # Enable in Module 10
     enabled: ${PETSTORE_SECURITY_ENABLED:false}
@@ -41,6 +45,10 @@ spring:
       enabled: false
     refresh:
       enabled: false
+    azure:
+      servicebus:
+        namespace: ${SERVICE_BUS_NS_URL:petstore-app-sb-ns.servicebus.windows.net}
+        queue-name: ${SERVICE_BUS_QUEUE_NAME:petstore-order-queue}
   security:
     # Used in Module 10
     oauth2:
