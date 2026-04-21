@@ -12,7 +12,7 @@ petstore:
           url: ${ORDERITEMSRESERVERSERVICE_URL:http://localhost:62489}
   security:
     # Enable in Module 10
-    enabled: ${PETSTORE_SECURITY_ENABLED:false}
+    enabled: ${PETSTORE_SECURITY_ENABLED:true}
 server:
   port: ${PETSTOREAPP_SERVER_PORT:8080}
 management:
@@ -61,7 +61,7 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: "https://petstoreapp-eqazb5dfaqayhvca.centralindia-01.azurewebsites.net/login/oauth2/code/azure"
             authorization-grant-type: authorization_code
         provider:
           azure:
